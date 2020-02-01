@@ -10,15 +10,17 @@
 pip install -r requirements.txt
 ```
 3. Скачать проект. 
+
 Далее на Windows в cmd:
-``
+```
 cd Downloads
 cd litera-master
 dir
 starter.py -s volchya-tropa-b34046 -o volchya-tropa.txt
 ```
+
 или на Linux:
-``
+```
 ./starter.py -s volchya-tropa-b34046 -o ~/volchya-tropa.txt
 ```
 
