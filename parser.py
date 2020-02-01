@@ -5,26 +5,24 @@ from time import sleep
 import requests
 from bs4 import BeautifulSoup
 
-import constants
-from exceptions import BadAuthorization, NoDataException
+
+MAX_PAGES_PER_CHAPTER = 10000
+WAIT_BETWEEN = 10
+
+
+class NoDataException(Exception):
+    pass
 
 
 class LitEraParser(object):
-    """Простой парсер книг с сайта litnet.
-
-    .. usage::
-
-        LitEraParser(book_slug).parse_to_file(book_file_name)
-
-    """
 
     csrf_token = ''
     _session = None
     _chapter_id_list = None
 
-    def __init__(self, book_slug, credentials=None):
-        self.book_url = path.join(constants.LITERA_BOOKS_URL, book_slug)
-        self._init_book(credentials=credentials)
+    def __init__(self, book_slug):
+        self.book_url = path.join('https://litnet.com/reader', book_slug)
+        self._init_book()
 
     @property
     def session(self):
@@ -37,19 +35,8 @@ class LitEraParser(object):
             })
         return self._session
 
-    def _auth(self, login, password):
 
-        # application / x - www - form - urlencoded
-        result = self.session.post(constants.LITERA_LOGIN_URL, data={
-            'LoginForm[login]': login,
-            'LoginForm[password]': password,
-            'ajax': 'w0',
-        })
-
-        if result.status_code != 200:
-            raise BadAuthorization()
-
-    def _init_book(self, credentials=None):
+    def _init_book(self):
 
         html_response = self.session.get(self.book_url)
         html_parser = BeautifulSoup(html_response.text, 'html.parser')
@@ -64,13 +51,11 @@ class LitEraParser(object):
         self.csrf_token = token_meta.attrs['content']
 
         self.session.headers.update({
-            'origin': constants.LITERA_ORIGIN_URL,
+            'origin': 'https://litnet.com',
             'referer': self.book_url,
             'x-csrf-token': self.csrf_token
         })
 
-        if credentials:
-            self._auth(*credentials)
 
     def _get_page(self, chapter_id, page):
 
@@ -80,9 +65,7 @@ class LitEraParser(object):
             '_csrf': self.csrf_token
         }
 
-        response_data = self.session.post(
-            constants.LITERA_GET_PAGE_URL, post_params
-        )
+        response_data = self.session.post('https://litnet.com/reader/get-page', post_params)
         response_json = json.loads(response_data.text)
 
         if not response_json['status']:
@@ -99,19 +82,15 @@ class LitEraParser(object):
 
     def _get_chapter(self, chapter_id):
 
-        self.session.headers['referer'] = '{}?c={}'.format(
-            self.book_url, chapter_id
-        )
-
+        self.session.headers['referer'] = '{}?c={}'.format(self.book_url, chapter_id)
         total_chapter_text = ''
-
         try:
-            for page in range(1, constants.MAX_PAGES_PER_CHAPTER):
+            for page in range(1, MAX_PAGES_PER_CHAPTER):
                 chapter_text, is_last_page = self._get_page(chapter_id, page)
                 total_chapter_text += chapter_text
                 if is_last_page:
                     break
-                sleep(constants.WAIT_BETWEEN)
+                sleep(WAIT_BETWEEN)
         except NoDataException as ex:
             print('Error! ', ex)
 

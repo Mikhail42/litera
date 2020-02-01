@@ -3,13 +3,15 @@
 
 Литнет не дает скачивать доступные вам книги и заставляет их читать со своего убого сайта? Решение тут.
 
-USAGE
------
-
-./starter.py -s volchya-tropa-b34046 -o ~/volchya-tropa.txt -l some.mail@mail.com -p some.pass
-
-
-REQUIREMENTS
-------------
-
+Для использования, выполнить
+ 
+```
 pip install -r requirements.txt
+
+./starter.py -s volchya-tropa-b34046 -o ~/volchya-tropa.txt
+```
+
+Здесь volchya-tropa-b34046 берется из URL (вольмите другую книгу, котую можно скачать без входа на сайт):
+https://litnet.com/ru/reader/volchya-tropa-b34046
+
+`pip install ...` достаточно выполнить один раз. 

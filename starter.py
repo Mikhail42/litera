@@ -5,12 +5,8 @@ import argparse
 from parser import LitEraParser
 
 
-def main(book_slug, book_file_name, login, password):
-    credentials = None
-    if login and password:
-        credentials = (login, password)
-
-    LitEraParser(book_slug, credentials).parse_to_file(book_file_name)
+def main(book_slug, book_file_name):
+    LitEraParser(book_slug).parse_to_file(book_file_name)
 
 
 if __name__ == '__main__':
@@ -24,12 +20,6 @@ if __name__ == '__main__':
         '-o', '--output', required=True,
         help='File name to save book.'
     )
-    argument_parser.add_argument(
-        '-l', '--login', required=False, help='Your login.', default=''
-    )
-    argument_parser.add_argument(
-        '-p', '--password', required=False, help='Your password.', default=''
-    )
     arguments = argument_parser.parse_args()
 
-    main(arguments.slug, arguments.output, arguments.login, arguments.password)
+    main(arguments.slug, arguments.output)
