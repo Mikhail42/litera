@@ -15,7 +15,7 @@ dir
 pip install -r requirements.txt
 starter.py -s volchya-tropa-b34046 -o volchya-tropa.txt
 ```
-Здесь volchya-tropa-b34046 берется из URL (вольмите другую книгу, котую можно скачать без входа на сайт):
+Здесь volchya-tropa-b34046 берется из URL (возьмите другую книгу, которую можно скачать без входа на сайт):
 https://litnet.com/ru/reader/volchya-tropa-b34046
 
 # Для повторного использования
@@ -24,3 +24,5 @@ cd Downloads
 cd litera-master
 starter.py -s volchya-tropa-b34046 -o volchya-tropa.txt
 ```
+
+Для скачивания с авторизацией смотри проект-оригинал.
